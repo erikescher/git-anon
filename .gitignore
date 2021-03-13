@@ -1,0 +1,12 @@
+.idea
+venv
+testing
+__pycache__
+/build/
+/*.egg-info/
+/dist/
+/old-releases/
+/deb_dist/
+/git-anon-*.tar.gz
+/.eggs/
+/.tox/

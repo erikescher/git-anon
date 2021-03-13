@@ -1,0 +1,4 @@
+skips: [
+  'B404', # all subprocess calls are checked carefully
+  'B603', # all subprocess calls are checked carefully
+]

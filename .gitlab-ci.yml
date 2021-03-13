@@ -1,0 +1,55 @@
+image: gitlab-registry.erikescher.de/docker/python:master
+
+stages:
+  - check
+  - build
+
+unit_tests:
+  before_script:
+    - pip3 install -r requirements.txt
+  stage: check
+  script:
+    - coverage run ./setup.py test
+    - coverage report -m
+  coverage: '/TOTAL.+ ([0-9]{1,3}%)/'
+
+tox:
+  timeout: "10h"
+  before_script:
+    - apt update
+    - DEBIAN_FRONTEND=noninteractive apt install --yes rustc openssl build-essential libssl-dev libffi-dev
+    - pip3 install tox
+  stage: check
+  variables:
+    GIT_ANON_LOGLEVEL: "10"
+    GIT_ANON_RETHROW_EXCEPTIONS: "True"
+    GIT_ANON_SYSTEM_TEST_AUTHORIZED: "True"
+    TOX_ADDITIONAL_TEST_COMMANDS: "python system_test.py"
+  script:
+    - tox
+
+safety:
+  before_script:
+    - python3 setup.py install
+  stage: check
+  script:
+    - pip3 freeze
+    - safety check --full-report
+  allow_failure: true
+
+
+prospector:
+  before_script:
+    - pip3 install -r requirements.txt
+  stage: check
+  script: prospector
+  allow_failure: true
+
+build:
+  before_script:
+    - pip3 install -r requirements.txt
+  stage: build
+  script: python3 setup.py sdist bdist_wheel
+  artifacts:
+    paths:
+      - dist/

@@ -1,0 +1,30 @@
+strictness: veryhigh
+max-line-length: 120
+
+ignore-paths:
+  - build
+
+vulture:
+  run: true
+
+bandit:
+  run: true
+  options:
+    config: '.bandit.yml'
+
+mypy:
+  run: true
+  options:
+    ignore-missing-imports: true
+    follow-imports: skip
+    strict-optional: true
+
+pep257:
+  disable:
+    - D213 # contradiction to D212; Summary on first rather than second line of multiline docstring.
+
+pylint:
+  disable:
+    - invalid-name # Single letter variables are sometimes justified.
+    - global-statement # Global variables make sense in some cases.
+    - no-self-use # Does not seem to detect inheritance correctly.
