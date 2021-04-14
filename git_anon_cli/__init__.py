@@ -65,12 +65,14 @@ def create_identity(count: int = 1) -> None:
     for _ in range(count):
         keyid = API.create_identity()
         print(keyid)
+    API.update_mailmap()
 
 
 @cli.command()
 def new_identity() -> None:
     """Creates a new identity and then switches to it."""
     API.use_identity(API.create_identity(), reuse=False)
+    API.update_mailmap()
 
 
 @cli.command()
@@ -91,6 +93,7 @@ def list_identities() -> None:
 @cli.command()
 def enable() -> None:
     API.enable()
+    API.update_mailmap()
 
 
 @cli.command()
@@ -124,6 +127,7 @@ def reveal_identity(key_id: str, encrypted: bool = True) -> None:
     """Reveals all attributes about the given identity."""
     for uid in API.reveal_identity(key_id, encrypted):
         print("[revealed]", uid)
+    API.update_mailmap()
 
 
 @cli.command()
@@ -133,6 +137,7 @@ def reveal_identity(key_id: str, encrypted: bool = True) -> None:
 def reveal_attribute(key_id: str, attribute: str, encrypted: bool = True) -> None:
     for revealed_uid in API.reveal_attribute(key_id, attribute, encrypted):
         print("[revealed]", revealed_uid)
+    API.update_mailmap()
 
 
 @cli.command()
@@ -142,6 +147,7 @@ def reveal_name(key_id: str, encrypted: bool = True):
     """Reveals the primary name or attribute associated with the identity."""
     revealed_uid = API.reveal_name(key_id, encrypted)
     print("[revealed]", revealed_uid)
+    API.update_mailmap()
 
 
 @cli.command()
@@ -198,6 +204,7 @@ def remove_userid(user_id: str) -> None:
 @click.argument("enc_key")
 def set_enc_key(enc_key: str) -> None:
     API.config_set_enc_key(enc_key)
+    API.update_mailmap()
 
 
 @cli.group()
