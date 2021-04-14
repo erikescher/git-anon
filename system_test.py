@@ -184,7 +184,7 @@ def verify_git_commit():
     _assert_string_contains_all(committer, ["ANON", "@git-anon", keyid_from_signature])
 
 
-def _verify_displayed_attributes(expected_attributes: List[Tuple[str, bool]]):
+def _verify_displayed_attributes(expected_attributes: List[Tuple[str, bool]], expected_strings: List[str], keyid_expected: bool):
     stdout, _ = _run_subprocess(["git", "log", "-n1", "--pretty=fuller", "--show-signature"])
     signed = False
     signature_verification_output: List[str] = []
@@ -212,8 +212,10 @@ def _verify_displayed_attributes(expected_attributes: List[Tuple[str, bool]]):
             attributes.append((attribute, trust_notation != "unknown"))
         assert line.find("WARNING") == -1
         assert line.find("No ") == -1  # No public key found.
-    _assert_string_contains_all(author, ["ANON", "@git-anon", keyid_from_signature])
-    _assert_string_contains_all(committer, ["ANON", "@git-anon", keyid_from_signature])
+    if keyid_expected:
+        expected_strings.append(keyid_from_signature)
+    _assert_string_contains_all(author, expected_strings)
+    _assert_string_contains_all(committer, expected_strings)
 
     attributes.sort()
     for a, t in attributes:
@@ -232,24 +234,22 @@ def verify_display_local_attributes():
     print("TEST: verify_display_local_attributes")
     commit_id, _ = _commit_with_new_identity()
     expected = [
-        ("Git-Anon User", True),
         ("Grand Maester of the Nights Watch", True),
         ("Member of the Nights Watch", True),
         ("Samwell Tarly", True)
     ]
-    _verify_displayed_attributes(expected)
+    _verify_displayed_attributes(expected, ["Samwell", "Tarly", "unknown-email"], False)
     print("DONE: verify_display_local_attributes")
 
 
 def verify_display_foreign_attributes():
     print("TEST: verify_display_foreign_attributes")
     expected = [
-        ("Git-Anon User", False),
         # ("Grand Maester of the Nights Watch", True),
         ("Member of the Nights Watch", True),
         ("Samwell Tarly", False)
     ]
-    _verify_displayed_attributes(expected)
+    _verify_displayed_attributes(expected, ["ANON", "@git-anon"], True)
     print("DONE: verify_display_foreign_attributes")
 
 

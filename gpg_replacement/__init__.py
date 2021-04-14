@@ -19,7 +19,7 @@ from typing import Tuple, List
 from pgpy import PGPSignature, PGPKey, PGPUID
 
 from git_anon.api_functions import APIInterface
-from git_anon.gpg_general import uid_as_str, uid_equals
+from git_anon.gpg_general import uid_as_str, uid_equals, get_pseudo_uid
 from git_anon.identity import verify_uid
 from git_anon.library_patches.patched_pgpy_functions import patched_pgpy_sign
 
@@ -100,6 +100,9 @@ def verify() -> None:
         if key.verify(commit_data, signature):
             trusted_uids, untrusted_uids = deduplicate_uids(verify_uid_certifications(key))
 
+            trusted_uids = strip_pseudo_uid(trusted_uids)
+            untrusted_uids = strip_pseudo_uid(untrusted_uids)
+
             status_to_user(signature, key, trusted_uids, untrusted_uids)
             status_to_caller(signature, key, trusted_uids)
         else:
@@ -125,6 +128,16 @@ def verify_uid_certifications(key: PGPKey) -> Tuple[List[PGPUID], List[PGPUID]]:
                 untrusted_uids.append(uid)
 
     return trusted_uids, untrusted_uids
+
+
+def strip_pseudo_uid(uids: List[PGPUID]) -> List[PGPUID]:
+    filtered: List[PGPUID] = []
+
+    for uid in uids:
+        if not uid_equals(get_pseudo_uid(), uid):
+            filtered.append(uid)
+
+    return filtered
 
 
 def deduplicate_uids(uids: Tuple[List[PGPUID], List[PGPUID]]) -> Tuple[List[PGPUID], List[PGPUID]]:
