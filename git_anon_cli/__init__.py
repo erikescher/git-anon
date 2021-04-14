@@ -180,13 +180,6 @@ def add_userid(user_id: str, auto_reveal, encrypted) -> None:
 
 
 @config.command()
-@click.argument("remote-name")
-@click.argument("remote-branch")
-def config_set_sync_remote(remote_name: str, remote_branch: str) -> None:
-    API.config_set_sync_remote(remote_name, remote_branch)
-
-
-@config.command()
 def list_userids() -> None:
     """Lists all attributes that will be added for new keys."""
     for uid in API.config_list_userids():

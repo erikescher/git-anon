@@ -143,15 +143,3 @@ class GitAnonConfig:
             raise CustomException("Failed to verify key: ", failure_reason)
         with open(filename, "w") as file:
             file.write(enc_key)
-
-    def set_remote_name(self, remote_name: str) -> None:
-        os.makedirs(os.path.join(self.git_dir, "git-anon"), exist_ok=True)
-        filename = os.path.join(self.git_dir, "git-anon", "remote_name")
-        with open(filename, "w") as file:
-            file.write(remote_name)
-
-    def set_remote_branch(self, remote_branch: str) -> None:
-        os.makedirs(os.path.join(self.git_dir, "git-anon"), exist_ok=True)
-        filename = os.path.join(self.git_dir, "git-anon", "remote_branch")
-        with open(filename, "w") as file:
-            file.write(remote_branch)

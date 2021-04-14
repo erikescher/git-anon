@@ -297,12 +297,6 @@ class APIInterface:
         if not key.is_public:
             self.trusted_keystore.store_key(key)
 
-    def config_set_sync_remote(self, remote_name: str, remote_branch: str) -> None:
-        if remote_name is not None:
-            self.git_anon_config.set_remote_name(remote_name)
-        if remote_branch is not None:
-            self.git_anon_config.set_remote_branch(remote_branch)
-
 # todo command for self-certification using external gpg
 # option: keyid to use from regular gpg keyring
 # consider using gpg for this for compatibility with smartcards, ...
