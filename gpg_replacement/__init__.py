@@ -28,7 +28,6 @@ args = sys.argv[1:]
 
 
 def main():
-    sys.stderr.write("in main")
     if args[1] == "-bsau":
         sign()
     else:
