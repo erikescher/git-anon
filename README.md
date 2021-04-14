@@ -23,12 +23,6 @@ pip3 install /path/to/distribution-file
 ## Usage
 Clone or initialize the repository normally (making sure to set a remote called ```origin```)
 
-Check if you are the first one to use git-anon in this repository. If someone else is using it already there should be a ```git-anon-keys``` branch.
-
-If you are not the first one, make sure the ```git-anon-keys``` branch is available locally (but not checked out):
-```bash
-git anon sync pull
-```
 Then configure your identity:
 ```bash
 # synchronization settings
@@ -47,8 +41,8 @@ git anon new-identity
 ```
 Finally, commit, pull and push as usual.
 If you think you're missing information about other identities:
+
 ```bash
-git anon sync pull
 git anon config set-enc-key "shared_secret" # if you know the secret and haven't provided it before
 git anon update-mappings
 ```
@@ -97,11 +91,18 @@ First create a certification key and publish it's public half.
 git anon cert gen-key --uid "Member of the Nights Watch" --output nights_watch.pub --output-secret-key nights_watch.key
 ```
 
+Others can then import and trust the public half:
+
+```bash
+cat nights_watch.pub | git anon cert import
+```
+
 Then either provide the secret half to all members of the group or offer to sign their identities for them.
 If the secret half of the certification key is available, git-anon will use it automatically when creating new identities.
 
-For now the certification process looks like this:
+For now the certification process for foreign identities looks like this:
 ```bash
+# group member: create a new identity
 ANONKEYID=git anon create-identity
 # group member: create certificate requests
 git anon cert request --keyid $ANONKEYID --uid "Member of the Nights Watch" > cert-reqeust.asc
@@ -115,8 +116,7 @@ git anon use-identity $ANONKEYID
 Of course many identities can and should be prepared at once.
 
 ## Shared Secrets
-Shared secrets must be strong enough to withstand offline brute force attacks 
-and should therefore be generated randomly with at least 100 bits of entropy.
+Shared secrets must be strong enough to withstand offline brute force attacks and should therefore be generated randomly with at least 100 bits of entropy.
 32 random hexadecimal characters would be a good choice.
 
 There are no mechanisms to make brute-force more difficult, instead simply make the shared secret stronger.
