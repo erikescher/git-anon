@@ -179,7 +179,7 @@ class SharedKeyStore(KeyStore):
 
             with open(os.path.join(uid_folder, filename), "rb") as file:
                 contents: bytes = file.read()
-            if encrypted:
+            if encrypted and self.derived_encryption_key is not None:
                 contents = self._decrypt_bytes(contents, expected_hash)
             self._verify_and_import_uid_packet(primary_key, contents, expected_hash)
 
