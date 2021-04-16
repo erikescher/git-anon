@@ -164,16 +164,14 @@ def uid_not_contained(uids: List[PGPUID], new: PGPUID) -> bool:
 
 
 def status_to_user(signature: PGPSignature, key: PGPKey, trusted_uids, untrusted_uids) -> None:
-    sys.stderr.write("git-anon: Signature made {}\n".format(signature.created))
-    sys.stderr.write("git-anon:                using {} key {}\n".format(
-        key.key_algorithm.name, key.fingerprint.keyid)
-    )
+    sys.stderr.write("git-anon: Signature made {} using {} key {}\n".format(
+        signature.created, key.key_algorithm.name, key.fingerprint.keyid
+    ))
     sys.stderr.write("git-anon: Good signature with attributes:\n")
     for uid in trusted_uids:
         sys.stderr.write("git-anon:   [trusted] {}\n".format(uid_as_str(uid)))
     for uid in untrusted_uids:
         sys.stderr.write("git-anon:   [unknown] {}\n".format(uid_as_str(uid)))
-    sys.stderr.write("Primary key fingerprint: {}\n".format(key.fingerprint))
 
 
 def status_to_caller(signature: PGPSignature, key: PGPKey, trusted_uids) -> None:
