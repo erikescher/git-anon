@@ -11,6 +11,8 @@ Some convenience features are not implemented yet and the storage and synchroniz
 pip3 install git-anon
 ```
 
+[PyPi-Page](https://pypi.org/project/git-anon/)
+
 ## Installing from Source
 ```bash
 python3 setup.py install
